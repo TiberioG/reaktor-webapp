@@ -21,13 +21,14 @@ const initialState = availableCategories.reduce(
 
 //this must be imported in rootReducer
 export function productsReducer(state = initialState, action) {
-  //console.log(action);
+  console.log(action);
+  const { payload } = action;
   switch (action.type) {
     case PRODUCTS_REQ:
       return {
         ...state,
-        [action.category]: {
-          ...state[action.category],
+        [payload.category]: {
+          ...state[payload.category],
           fetching: true,
           error: null,
         },
@@ -36,10 +37,10 @@ export function productsReducer(state = initialState, action) {
       return {
         ...state,
         initial: false,
-        [action.category]: {
+        [payload.category]: {
           fetching: false,
           error: null,
-          data: action.data,
+          data: payload.data,
         },
       };
 
@@ -77,13 +78,14 @@ function fetchProducts(category) {
 // the action is automatically passed by TakeLatest
 export function* workerProductsSaga(action) {
   try {
-    console.log(action);
+    //console.log(action);
 
+    const { payload } = action;
     //in call you have (fn, ...args)
-    const response = yield call(fetchProducts, action.category);
+    const response = yield call(fetchProducts, payload.category);
 
     if (response) {
-      yield put({ type: 'PRODUCTS_OK', category: action.category, data: response.data });
+      yield put({ type: 'PRODUCTS_OK', payload: { category: payload.category, data: response.data } });
     }
   } catch (err) {
     console.error(err);

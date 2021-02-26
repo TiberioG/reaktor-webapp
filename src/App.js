@@ -9,19 +9,20 @@ import { availableCategories, setCategory } from './redux/categoriesSlice';
 
 const GlobalStyle = createGlobalStyle`
   body {
-    color: red;
+    color: black;
   }
 `;
 
 const App = () => {
-  let string = 'hello';
-
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch({ type: 'PRODUCTS_REQ', category: 'gloves' });
-    dispatch({ type: 'PRODUCTS_REQ', category: 'facemasks' });
-    dispatch({ type: 'PRODUCTS_REQ', category: 'beanies' });
+    dispatch({ type: 'PRODUCTS_REQ', payload: { category: 'gloves' } });
+    dispatch({ type: 'PRODUCTS_REQ', payload: { category: 'facemasks' } });
+    dispatch({ type: 'PRODUCTS_REQ', payload: { category: 'beanies' } });
+    dispatch({ type: 'AVAILABILITY_REQ', payload: { manufacturer: 'okkau' } });
   }, []);
+
+  const availability = useSelector(state => state.availability);
 
   const columns = useMemo(
     () => [
@@ -46,10 +47,25 @@ const App = () => {
             Header: 'Manufacturer',
             accessor: 'manufacturer',
           },
+          {
+            Header: 'Availability',
+            accessor: row => {
+              if (!availability.initial) {
+                //console.log(availability[row.manufacturer]);
+                if (availability[row.manufacturer]) {
+                  if (!availability[row.manufacturer].fetching) {
+                    return availability[row.manufacturer]?.data[row.id].inStockValue;
+                  }
+                  //console.log(availability[row.manufacturer].data[row.id]);
+                  else return 'fetching';
+                }
+              } else return 'waiting';
+            },
+          },
         ],
       },
     ],
-    [],
+    [availability],
   );
 
   const products = useSelector(state => state.products);
