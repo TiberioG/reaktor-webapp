@@ -1,4 +1,4 @@
-import { takeEvery, call, put, select } from 'redux-saga/effects';
+import { takeEvery, call, put, delay } from 'redux-saga/effects';
 import axios from 'axios';
 import API_CONFIG from './API-config.json';
 import { availableCategories } from '../redux/categoriesSlice';
@@ -22,9 +22,7 @@ const arrayToObject = array =>
     return obj;
   }, {});
 
-const initialState = {
-  initial: true,
-};
+const initialState = {};
 
 //this must be imported in rootReducer
 export function availabilityReducer(state = initialState, action) {
@@ -37,14 +35,13 @@ export function availabilityReducer(state = initialState, action) {
         [payload.manufacturer]: {
           ...state[action.category],
           fetching: true,
-          error: null,
         },
       };
     case AVAILABILITY_OK:
       return {
         ...state,
-        initial: false,
         [payload.manufacturer]: {
+          ready: true,
           fetching: false,
           error: null,
           data: arrayToObject(payload.data),
@@ -84,27 +81,28 @@ function fetchAvailability(manufacturer) {
 // worker saga: makes the api call when watcher saga sees the action
 // the action is automatically passed by TakeLatest
 export function* workerAvailabilitySaga(action) {
-  try {
-    console.log(action);
+  for (let i = 0; i < 3; i++) {
+    try {
+      const { payload } = action;
+      //in call you have (fn, ...args)
+      const response = yield call(fetchAvailability, payload.manufacturer);
 
-    const { payload } = action;
-    //in call you have (fn, ...args)
-    const response = yield call(fetchAvailability, payload.manufacturer);
-
-    if (response) {
-      console.log(response.data);
-      if (response.data.code === 200 && response.data.response !== '[]') {
-        yield put({
-          type: 'AVAILABILITY_OK',
-          payload: { manufacturer: payload.manufacturer, data: response.data.response },
-        });
-      } else yield call;
+      if (response) {
+        if (response.data.code === 200 && response.data.response !== '[]') {
+          yield put({
+            type: 'AVAILABILITY_OK',
+            payload: { manufacturer: payload.manufacturer, data: response.data.response },
+          });
+          return;
+        }
+      }
+    } catch (err) {
+      if (i < 2) {
+        yield delay(2000);
+      }
     }
-  } catch (err) {
-    console.error(err);
-    //we need to serialize the Error obj
-    const error = err.response.data; //todo refacror here with proxy
-    // dispatch a failure action to the store with the error
-    yield put({ type: 'AVAILABILITY_FETCH_ERR', error });
-  }
+  } //end for
+
+  // dispatch a failure action to the store with the error
+  yield put({ type: 'AVAILABILITY_FETCH_ERR', error });
 }

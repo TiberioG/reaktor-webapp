@@ -9,20 +9,22 @@ const PRODUCTS_OK = 'PRODUCTS_OK';
 const PRODUCTS_KO = 'PRODUCTS_KO'; // this if axios fetch was ok but server returns error
 const PRODUCTS_FETCH_ERR = 'PRODUCTS_FETCH_ERR'; // this if we catch an error from axios fetch
 
-const initialState = availableCategories.reduce(
+const isSetsEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
+
+let initialState = availableCategories.reduce(
   (acc, curr) => (
     (acc[curr] = {
-      initial: true,
+      ready: false,
     }),
     acc
   ),
-  { initial: true },
+  {},
 );
 
 //this must be imported in rootReducer
 export function productsReducer(state = initialState, action) {
-  console.log(action);
   const { payload } = action;
+
   switch (action.type) {
     case PRODUCTS_REQ:
       return {
@@ -30,14 +32,13 @@ export function productsReducer(state = initialState, action) {
         [payload.category]: {
           ...state[payload.category],
           fetching: true,
-          error: null,
         },
       };
     case PRODUCTS_OK:
       return {
         ...state,
-        initial: false,
         [payload.category]: {
+          ready: true,
           fetching: false,
           error: null,
           data: payload.data,
@@ -78,8 +79,6 @@ function fetchProducts(category) {
 // the action is automatically passed by TakeLatest
 export function* workerProductsSaga(action) {
   try {
-    //console.log(action);
-
     const { payload } = action;
     //in call you have (fn, ...args)
     const response = yield call(fetchProducts, payload.category);

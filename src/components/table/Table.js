@@ -4,6 +4,7 @@ import { useTable, useBlockLayout } from 'react-table';
 import { FixedSizeList } from 'react-window';
 
 const Tr = styled.div`
+  vertical-align: center;
   :last-child {
     .td {
       border-bottom: 0;
@@ -12,27 +13,27 @@ const Tr = styled.div`
 `;
 
 const Table = styled.div`
-  display: inline-block;
-  border-spacing: 0;
-  border: 1px solid black;
+  border-color: rgb(128, 128, 128);
+  box-sizing: border-box;
+  display: table-row-group;
 `;
 
 const Th = styled.div`
   margin: 0;
   padding: 0.5rem;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
+  border-bottom: 1px solid rgb(128, 128, 128);
+  border-right: 1px solid rgb(128, 128, 128);
 
   :last-child {
-    border-right: 1px solid black;
+    border-right: 1px solid rgb(128, 128, 128);
   }
 `;
 
 const Td = styled.div`
   margin: 0;
   padding: 0.5rem;
-  border-bottom: 1px solid black;
-  border-right: 1px solid black;
+  border-bottom: 1px solid rgb(128, 128, 128);
+  border-right: 1px solid rgb(128, 128, 128);
 
   :last-child {
     border-right: 1px solid black;
@@ -98,7 +99,7 @@ const MyTable = ({ columns, data }) => {
       </div>
 
       <div {...getTableBodyProps()}>
-        <FixedSizeList height={400} itemCount={rows.length} itemSize={35} width={totalColumnsWidth} useIsScrolling>
+        <FixedSizeList height={700} itemCount={rows.length} itemSize={35} width={totalColumnsWidth} useIsScrolling>
           {RenderRow}
         </FixedSizeList>
       </div>
