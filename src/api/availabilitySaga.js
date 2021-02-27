@@ -71,10 +71,7 @@ function fetchAvailability(manufacturer) {
   let config = {
     method: 'get',
     url: API_CONFIG.baseUrl + 'availability/' + manufacturer,
-    headers: {
-      accept: 'Accept: application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     crossDomain: true,
   };
   return axios(config);
