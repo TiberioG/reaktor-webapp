@@ -69,7 +69,7 @@ export function* watcherProductsSaga() {
 function fetchProducts(category) {
   let config = {
     method: 'get',
-    url: API_CONFIG.baseUrl + 'products/' + category,
+    url: '/v2/' + 'products/' + category,
     headers: {
       accept: 'Accept: application/json',
       'Access-Control-Allow-Origin': '*',
