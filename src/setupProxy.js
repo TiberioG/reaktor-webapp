@@ -1,8 +1,8 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function (app) {
+module.exports = app => {
   app.use(
-    '/api',
+    '/v2',
     createProxyMiddleware({
       target: 'https://bad-api-assignment.reaktor.com',
       changeOrigin: true,

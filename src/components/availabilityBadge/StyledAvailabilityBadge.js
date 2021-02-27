@@ -35,7 +35,7 @@ export const LoadingContainer = styled.div`
   margin-right: 10px;
 
   min-height: 16px;
-  background: linear-gradient(130deg, #b5b5b5aa, #969696aa, #b5b5b5aa);
+  background: linear-gradient(90deg, #b5b5b5aa, rgb(55, 55, 55), #b5b5b5aa);
   box-shadow: 0 0 0.3em 0 #b5b5b5;
   background-size: 200% 200%;
 
