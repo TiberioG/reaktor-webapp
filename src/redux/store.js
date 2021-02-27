@@ -9,7 +9,14 @@ const sagaMiddleware = createSagaMiddleware();
 //use configure store from the toolkit and apply saga, remember to set thunk the default one to false
 const store = configureStore({
   reducer: rootReducer,
-  middleware: [...getDefaultMiddleware({ thunk: false, serializableCheck: false, immutableCheck: false }), sagaMiddleware],
+  middleware: [
+    ...getDefaultMiddleware({
+      thunk: false,
+      serializableCheck: false,
+      immutableCheck: false, //this speeds up
+    }),
+    sagaMiddleware,
+  ],
 });
 
 //run the rootSaga

@@ -1,45 +1,65 @@
 import React from 'react';
 import { useTable } from 'react-table';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { Table, Head, Body } from './StyledInfiniteTable';
 
-// eslint-disable-next-line react/prop-types
-const InfiniteScroll = ({ columns, data, update }) => {
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+const MyInfiniteScroll = ({ columns, data, update }) => {
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable({
     columns,
     data,
   });
 
   return (
-    <InfiniteScroll dataLength={rows.length} next={update} hasMore={true} loader={<h4>Loading more 2 itens...</h4>}>
-      <table {...getTableProps()}>
-        <thead>
+    <InfiniteScroll
+      dataLength={rows.length}
+      next={update}
+      hasMore={true}
+      loader={<h4>Loading more items...</h4>}
+    >
+      <Table {...getTableProps()}>
+        <Head>
           {headerGroups.map(headerGroup => (
-            <tr key={headerGroup.getHeaderGroupProps().key} {...headerGroup.getHeaderGroupProps()}>
+            <tr
+              key={headerGroup.getHeaderGroupProps().key}
+              {...headerGroup.getHeaderGroupProps()}
+            >
               {headerGroup.headers.map(column => (
-                <th key={column.getHeaderProps().key} {...column.getHeaderProps()}>
+                <th
+                  key={column.getHeaderProps().key}
+                  {...column.getHeaderProps()}
+                >
                   {column.render('Header')}
                 </th>
               ))}
             </tr>
           ))}
-        </thead>
+        </Head>
 
-        <tbody {...getTableBodyProps()}>
+        <Body {...getTableBodyProps()}>
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              // eslint-disable-next-line react/jsx-key
-              <tr {...row.getRowProps()}>
+              <tr key={i} {...row.getRowProps()}>
                 {row.cells.map(cell => {
-                  // eslint-disable-next-line react/jsx-key
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                  return (
+                    <td key={cell.getCellProps()?.key} {...cell.getCellProps()}>
+                      {cell.render('Cell')}
+                    </td>
+                  );
                 })}
               </tr>
             );
           })}
-        </tbody>
-      </table>
+        </Body>
+      </Table>
     </InfiniteScroll>
   );
 };
 
-export default InfiniteScroll;
+export default MyInfiniteScroll;
