@@ -9,8 +9,8 @@ const GlobalStyle = createGlobalStyle`
     Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 400;
     font-size: 14px;
-    color: #2f2e34;
-    background: #ffcdb2;
+    color: #f5f5f5;
+    background: #131313;
   }
 `;
 

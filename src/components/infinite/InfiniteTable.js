@@ -15,6 +15,7 @@ const MyInfiniteScroll = ({ columns, data, update }) => {
     data,
   });
 
+  //todo add sticky header
   return (
     <InfiniteScroll
       dataLength={rows.length}

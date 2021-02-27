@@ -71,9 +71,10 @@ function fetchProducts(category) {
     method: 'get',
     url: API_CONFIG.baseUrl + 'products/' + category,
     headers: {
-      'Content-Type': 'x-www-form-urlencoded',
-      'x-force-error-mode': 'all',
+      accept: 'Accept: application/json',
+      'Access-Control-Allow-Origin': '*',
     },
+    crossDomain: true,
   };
   return axios(config);
 }
@@ -85,10 +86,16 @@ export function* workerProductsSaga(action) {
   try {
     const apiData = yield call(_retryApi, payload);
 
-    yield put({ type: 'PRODUCTS_OK', payload: { category: payload.category, data: apiData } });
+    yield put({
+      type: 'PRODUCTS_OK',
+      payload: { category: payload.category, data: apiData },
+    });
   } catch (error) {
     console.log(error);
-    yield put({ type: 'AVAILABILITY_ERROR', payload: { category: payload.category, error: error } });
+    yield put({
+      type: 'AVAILABILITY_ERROR',
+      payload: { category: payload.category, error: error },
+    });
   }
 }
 
@@ -99,7 +106,6 @@ function* _retryApi(payload) {
       const response = yield call(fetchProducts, payload.category);
       if (response) {
         if (response.status === 200) {
-          console.log(response.data);
           return response.data;
         } else throw new Error('API response is bad'); //those are catched locally  to trigger delay
       } else throw new Error('API response was null');

@@ -146,7 +146,7 @@ const HomePage = () => {
         </Layout>
       ) : (
         <LoaderContainer>
-          <Loader type='ThreeDots' color='#6f4cff' height={80} width={80} />
+          <Loader type='Grid' color='#6f4cff' height={100} width={100} />
         </LoaderContainer>
       )}
     </>

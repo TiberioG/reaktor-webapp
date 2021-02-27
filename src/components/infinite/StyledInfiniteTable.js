@@ -26,6 +26,6 @@ export const Body = styled.tbody`
   }
 
   tr:nth-child(even) {
-    background-color: rgba(128, 128, 128, 0.5);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 `;
