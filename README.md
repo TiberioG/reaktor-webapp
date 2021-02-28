@@ -2,16 +2,18 @@
 
 This is a web application which can display a list of different items, using two 'bad' APIs 
 
-### Check live version
+## Check live version
 
 Live version is available at [https://reaktorapp.tiberiogalbiati.com/](https://reaktorapp.tiberiogalbiati.com/)
 
 This version is deployed on Netlify.
 
 
+## Screenshot
 
+![](screenshot.png)
 
-### Features Implemented
+## Features Implemented
 
 - [x] Infinite scroll table, with automatic load on bottom reached
 - [x] Resizable table
@@ -25,7 +27,7 @@ This version is deployed on Netlify.
 
 
 
-### Libraries used
+## Libraries used
 * [React](https://reactjs.org/)
 * [Redux](https://redux.js.org/)
 * [Redux Saga](https://redux-saga.js.org/)
