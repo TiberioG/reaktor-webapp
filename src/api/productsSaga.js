@@ -93,7 +93,7 @@ export function* workerProductsSaga(action) {
   } catch (error) {
     console.log(error);
     yield put({
-      type: 'AVAILABILITY_ERROR',
+      type: 'PRODUCTS_ERROR',
       payload: { category: payload.category, error: error },
     });
   }

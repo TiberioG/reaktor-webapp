@@ -1,0 +1,7 @@
+[[redirects]]
+from = "/v2/*"
+to = "https://bad-api-assignment.reaktor.com/v2/:splat"
+status = 200
+force = true
+[redirects.headers]
+X-From = "Netlify"
