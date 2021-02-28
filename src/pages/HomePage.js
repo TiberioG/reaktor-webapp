@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { availableCategories, setCategory } from '../redux/categoriesSlice';
 
-import MyInfiniteScroll from '../components/infinite/InfiniteTable';
+import InfiniteTableScroll from '../components/infiniteTableScroll/InfiniteTableScroll';
 import {
   CategoryButton,
   ColorCellContainer,
@@ -25,24 +25,28 @@ const HomePage = () => {
 
   const [lastItem, setLastItem] = useState(200);
 
+  //effect to fetch all products
   useEffect(() => {
     availableCategories.forEach(cat => {
       dispatch({ type: 'PRODUCTS_REQ', payload: { category: cat } });
     });
   }, []);
 
+  //effect to fetch availability of manufacturers
   useEffect(() => {
+    //check if we have done to fetch every product
     if (
       Object.values(products)
         .map(cat => cat.ready)
         .every(item => item === true)
     ) {
+      //use a set to have distinct values of manufacturers
       const distinctManufac = [
         ...new Set(
           Object.values(products)
-            .map(cat => cat?.data)
-            .reduce((acc, cur) => acc.concat(cur))
-            .map(product => product?.manufacturer),
+            .map(cat => cat?.data) //extract data for every category
+            .reduce((acc, cur) => acc.concat(cur)) //merge all categories in one
+            .map(product => product?.manufacturer), // extract all manufacturers
         ),
       ];
       distinctManufac.forEach(manufacturer =>
@@ -51,6 +55,7 @@ const HomePage = () => {
     }
   }, [products]);
 
+  //utility component to render buttons to choose the category
   const Buttons = () => {
     return (
       <HeaderContainer>
@@ -74,10 +79,8 @@ const HomePage = () => {
   const columns = useMemo(
     () => [
       {
-        // eslint-disable-next-line react/display-name
         Header: () => Buttons(),
         id: 'mytable',
-        // Second group columns
         columns: [
           {
             Header: 'Name',
@@ -90,6 +93,7 @@ const HomePage = () => {
           {
             Header: 'Color',
             accessor: 'color',
+            //extract the array of colors and map to a component
             Cell: row => {
               return (
                 <ColorCellContainer>
@@ -108,6 +112,7 @@ const HomePage = () => {
             Header: 'Availability',
             width: 300,
             accessor: row => {
+              //case availability is ready
               if (availability[row.manufacturer]?.ready) {
                 return (
                   <AvailabilityBadge
@@ -117,10 +122,11 @@ const HomePage = () => {
                   />
                 );
               }
+              //case availability is fetching
               if (availability[row.manufacturer]?.fetching) {
                 return <AvailabilityBadge fetching />;
               }
-
+              //case availability was not available
               if (availability[row.manufacturer]?.error) {
                 return (
                   <AvailabilityBadge retry manufacturer={row.manufacturer} />
@@ -138,10 +144,11 @@ const HomePage = () => {
     <>
       {products[currentCategory].ready ? (
         <Layout>
-          <MyInfiniteScroll
+          <InfiniteTableScroll
             columns={columns}
             data={products[currentCategory]?.data.slice(0, lastItem)}
             update={() => setLastItem(lastItem + 200)}
+            isEnded={lastItem > products[currentCategory]?.data.length}
           />
         </Layout>
       ) : (

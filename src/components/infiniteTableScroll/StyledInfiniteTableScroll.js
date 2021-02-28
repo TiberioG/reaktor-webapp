@@ -5,6 +5,7 @@ export const Table = styled.table`
   border-spacing: 0;
   border-collapse: collapse;
   text-align: left;
+
   th {
     position: sticky;
     top: 0;
@@ -14,8 +15,13 @@ export const Table = styled.table`
 export const Head = styled.thead`
   text-align: left;
   position: sticky;
+
   tr {
     height: 50px;
+  }
+
+  th {
+    font-size: 23px;
   }
 `;
 

@@ -1,17 +1,21 @@
 import { takeEvery, call, put, delay } from 'redux-saga/effects';
 import axios from 'axios';
-import API_CONFIG from './API-config.json';
+
+const parser = new DOMParser();
 
 // action types
 const AVAILABILITY_REQ = 'AVAILABILITY_REQ';
 const AVAILABILITY_OK = 'AVAILABILITY_OK';
 const AVAILABILITY_ERROR = 'AVAILABILITY_ERROR';
 
-const RETRIES = 3;
-const parser = new DOMParser();
+const RETRIES = 3; //set here the max number of API call retries
 
+/*
+Small function to parse the ugly response of the Availability server into an object
+*/
 const arrayToObject = array =>
   array.reduce((obj, item) => {
+    //parse from XML
     const parsed = parser.parseFromString(item.DATAPAYLOAD, 'text/xml');
 
     obj[item.id.toLowerCase()] = {
@@ -61,11 +65,6 @@ export function availabilityReducer(state = initialState, action) {
   }
 }
 
-// watcher saga: watches for actions dispatched to the store, starts worker saga
-export function* watcherAvailabilitySaga() {
-  yield takeEvery('AVAILABILITY_REQ', workerAvailabilitySaga);
-}
-
 // this is responsible of calling API
 function fetchAvailability(manufacturer) {
   let config = {
@@ -92,7 +91,7 @@ export function* workerAvailabilitySaga(action) {
       payload: { manufacturer: payload.manufacturer, data: apiData.response },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     yield put({
       type: 'AVAILABILITY_ERROR',
       payload: { manufacturer: payload.manufacturer, error: error },
@@ -108,7 +107,7 @@ function* _retryApi(payload) {
       if (response) {
         //because the api when brokes still sends 200 code but the response is a string, not an empty array!
         if (response.data.code === 200 && response.data.response !== '[]') {
-          console.log(response.data);
+          //console.log(response.data);
           return response.data;
         } else throw new Error('API response is bad'); //those are catched locally  to trigger delay
       } else throw new Error('API response was null');
@@ -119,6 +118,10 @@ function* _retryApi(payload) {
       }
     }
   } //end for
-
   throw new Error('API request failed after ' + RETRIES);
+}
+
+// watcher saga: watches for actions dispatched to the store, starts worker saga
+export function* watcherAvailabilitySaga() {
+  yield takeEvery('AVAILABILITY_REQ', workerAvailabilitySaga);
 }

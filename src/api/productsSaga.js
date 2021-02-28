@@ -1,6 +1,5 @@
-import { takeEvery, call, put, select, delay } from 'redux-saga/effects';
+import { takeEvery, call, put, delay } from 'redux-saga/effects';
 import axios from 'axios';
-import API_CONFIG from './API-config.json';
 import { availableCategories } from '../redux/categoriesSlice';
 
 // action types
@@ -91,7 +90,7 @@ export function* workerProductsSaga(action) {
       payload: { category: payload.category, data: apiData },
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     yield put({
       type: 'PRODUCTS_ERROR',
       payload: { category: payload.category, error: error },

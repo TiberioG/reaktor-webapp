@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTable } from 'react-table';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Table, Head, Body } from './StyledInfiniteTable';
+import { Table, Head, Body } from './StyledInfiniteTableScroll';
 
-const MyInfiniteScroll = ({ columns, data, update }) => {
+const InfiniteTableScroll = ({ columns, data, update, isEnded }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -20,8 +20,8 @@ const MyInfiniteScroll = ({ columns, data, update }) => {
     <InfiniteScroll
       dataLength={rows.length}
       next={update}
-      hasMore={true}
-      loader={<h4>Loading more items...</h4>}
+      hasMore={!isEnded}
+      loader={<h2>Loading more items...</h2>}
     >
       <Table {...getTableProps()}>
         <Head>
@@ -63,4 +63,4 @@ const MyInfiniteScroll = ({ columns, data, update }) => {
   );
 };
 
-export default MyInfiniteScroll;
+export default InfiniteTableScroll;

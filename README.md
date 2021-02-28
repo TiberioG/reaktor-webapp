@@ -1,17 +1,24 @@
 # Reaktor junior dev assignment
 
-This is a web application which can display
+This is a web application which can display a list of different items, using two 'bad' APIs 
 
 ### Check live version
 
-Live version is available at [http://reaktorapp.tiberiogalbiati.com/](http://reaktorapp.tiberiogalbiati.com/)
+Live version is available at [https://reaktorapp.tiberiogalbiati.com/](https://reaktorapp.tiberiogalbiati.com/)
+
+This version is deployed on Netlify.
 
 
 
 
 ### Features Implemented
 
-- [x] Infinite scroll table, with automatic load 
+- [x] Infinite scroll table, with automatic load on bottom reached
+- [x] Resizable table
+- [x] Switch different categories
+- [x] Retry to fetch API if there are errors
+- [x] Skeleton loaders for slow API response
+- [x] Dynamic display of colors
 
 - [ ] Sticky header
 - [ ] Searching and filtering
