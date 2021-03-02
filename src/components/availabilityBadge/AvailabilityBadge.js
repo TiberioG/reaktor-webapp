@@ -6,7 +6,6 @@ import {
 } from './StyledAvailabilityBadge';
 import { useDispatch } from 'react-redux';
 
-//todo add a fallback in case we have more types than those
 //here i save the pretty name to show and the color for each availability status
 const types = {
   INSTOCK: {
@@ -20,6 +19,18 @@ const types = {
   LESSTHAN10: {
     color: 'orange',
     msg: 'Less than 10',
+  },
+  FALLBACK: {
+    color: 'grey',
+    msg: 'Please try again',
+  },
+};
+
+const handleTypes = {
+  get(typesObj, code) {
+    return code in typesObj //check if we have this availability code
+      ? typesObj[code] // if we have the code, return the content
+      : typesObj.FALLBACK;
   },
 };
 
@@ -45,8 +56,10 @@ const AvailabilityBadge = props => {
       ) : props.fetching ? (
         <LoadingContainer />
       ) : (
-        <AvailabilityContainer color={types[props.info].color}>
-          {types[props.info].msg}
+        <AvailabilityContainer
+          color={new Proxy(types, handleTypes)[props.info].color}
+        >
+          {new Proxy(types, handleTypes)[props.info].msg}
         </AvailabilityContainer>
       )}
     </>

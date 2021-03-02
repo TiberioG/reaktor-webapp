@@ -32,6 +32,7 @@ export function productsReducer(state = initialState, action) {
         [payload.category]: {
           ...state[payload.category],
           fetching: true,
+          ready: false,
         },
       };
     case PRODUCTS_OK:
@@ -49,6 +50,7 @@ export function productsReducer(state = initialState, action) {
       return {
         ...state,
         [payload.category]: {
+          ready: false,
           fetching: false,
           error: payload.error,
         },
