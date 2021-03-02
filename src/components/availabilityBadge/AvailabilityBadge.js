@@ -4,7 +4,7 @@ import {
   LoadingContainer,
   RetryButton,
 } from './StyledAvailabilityBadge';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 //here i save the pretty name to show and the color for each availability status
 const types = {
@@ -22,7 +22,7 @@ const types = {
   },
   FALLBACK: {
     color: 'grey',
-    msg: 'Please try again',
+    msg: 'Not found',
   },
 };
 
@@ -30,19 +30,30 @@ const handleTypes = {
   get(typesObj, code) {
     return code in typesObj //check if we have this availability code
       ? typesObj[code] // if we have the code, return the content
-      : typesObj.FALLBACK;
+      : typesObj.FALLBACK; // this means the product was not found
   },
 };
 
 const AvailabilityBadge = props => {
   const dispatch = useDispatch();
 
-  //* case retry -> show button to refetch again
-  //* case fetching -> show loader
-  //* case ok -> show availability info
-  return (
-    <>
-      {props.retry ? (
+  const availability = useSelector(state => state.availability);
+
+  //case ok
+  if (availability[props.manufacturer]?.ready) {
+    const inStockValue =
+      availability[props.manufacturer]?.data[props.id]?.inStockValue;
+    return (
+      <AvailabilityContainer
+        color={new Proxy(types, handleTypes)[inStockValue].color}
+      >
+        {new Proxy(types, handleTypes)[inStockValue].msg}
+      </AvailabilityContainer>
+    );
+  } else {
+    //case availability was not available
+    if (availability[props.manufacturer]?.error) {
+      return (
         <RetryButton
           onClick={() =>
             dispatch({
@@ -53,16 +64,8 @@ const AvailabilityBadge = props => {
         >
           Click to retry
         </RetryButton>
-      ) : props.fetching ? (
-        <LoadingContainer />
-      ) : (
-        <AvailabilityContainer
-          color={new Proxy(types, handleTypes)[props.info].color}
-        >
-          {new Proxy(types, handleTypes)[props.info].msg}
-        </AvailabilityContainer>
-      )}
-    </>
-  );
+      );
+    } else return <LoadingContainer />;
+  }
 };
 export default AvailabilityBadge;

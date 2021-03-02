@@ -76,69 +76,49 @@ const HomePage = () => {
     );
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: () => Buttons(),
-        id: 'mytable',
-        columns: [
-          {
-            Header: 'Name',
-            accessor: 'name',
+  const columns = [
+    {
+      Header: () => Buttons(),
+      id: 'mytable',
+      columns: [
+        {
+          Header: 'Name',
+          accessor: 'name',
+        },
+        {
+          Header: 'Price',
+          accessor: row => addCurrencySymbol(row?.price),
+        },
+        {
+          Header: 'Color',
+          accessor: 'color',
+          //extract the array of colors and map to a component
+          Cell: row => {
+            return (
+              <ColorCellContainer>
+                {row.value.map((color, key) => (
+                  <ColorBadge key={key} color={color} />
+                ))}
+              </ColorCellContainer>
+            );
           },
-          {
-            Header: 'Price',
-            accessor: row => addCurrencySymbol(row?.price),
+        },
+        {
+          Header: 'Manufacturer',
+          accessor: row => capitalizeFirst(row?.manufacturer),
+        },
+        {
+          Header: 'Availability',
+          width: 300,
+          accessor: row => {
+            return (
+              <AvailabilityBadge id={row.id} manufacturer={row?.manufacturer} />
+            );
           },
-          {
-            Header: 'Color',
-            accessor: 'color',
-            //extract the array of colors and map to a component
-            Cell: row => {
-              return (
-                <ColorCellContainer>
-                  {row.value.map((color, key) => (
-                    <ColorBadge key={key} color={color} />
-                  ))}
-                </ColorCellContainer>
-              );
-            },
-          },
-          {
-            Header: 'Manufacturer',
-            accessor: row => capitalizeFirst(row?.manufacturer),
-          },
-          {
-            Header: 'Availability',
-            width: 300,
-            accessor: row => {
-              //case availability is ready
-              if (availability[row.manufacturer]?.ready) {
-                return (
-                  <AvailabilityBadge
-                    info={
-                      availability[row.manufacturer]?.data[row.id]?.inStockValue
-                    }
-                  />
-                );
-              }
-              //case availability is fetching
-              if (availability[row.manufacturer]?.fetching) {
-                return <AvailabilityBadge fetching />;
-              }
-              //case availability was not available
-              if (availability[row.manufacturer]?.error) {
-                return (
-                  <AvailabilityBadge retry manufacturer={row.manufacturer} />
-                );
-              }
-            },
-          },
-        ],
-      },
-    ],
-    [availability, currentCategory],
-  );
+        },
+      ],
+    },
+  ];
 
   return (
     <>
